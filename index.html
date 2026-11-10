@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>homealone. 小鬼当家</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-180.png">
+<link rel="manifest" href="manifest.json">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:16px}
+body{font-family:Georgia,"Songti SC","Noto Serif SC",serif;background:#F5F0E4;color:#26221A;
+ line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:430px;margin:0 auto;padding:0 18px 90px}
+/* 头 */
+header{background:#8E1F1F;color:#F5F0E4;padding:34px 18px 30px;position:relative;overflow:hidden}
+header::before{content:"";position:absolute;inset:0;
+ background:radial-gradient(circle at 20% 30%,rgba(255,255,255,.06) 0 2px,transparent 3px),
+ radial-gradient(circle at 70% 65%,rgba(255,255,255,.05) 0 2px,transparent 3px),
+ radial-gradient(circle at 45% 85%,rgba(255,255,255,.04) 0 2px,transparent 3px);
+ background-size:170px 170px,230px 230px,190px 190px}
+.hsnow{position:absolute;color:rgba(255,255,255,.28);font-size:.9rem;pointer-events:none}
+.h1{font-size:2.5rem;letter-spacing:.04em;font-weight:900;position:relative}
+.h1 .dot{color:#C9A227}
+.h2{font-size:1.02rem;letter-spacing:.5em;margin:6px 0 4px;color:#F0E2C0;position:relative}
+.h3{font-size:.75rem;letter-spacing:.2em;color:rgba(245,240,228,.75);position:relative}
+.gold{color:#C9A227}
+/* 档案带 */
+.filmband{background:#1F5C3D;color:#F5F0E4;padding:16px 18px}
+.frow{display:flex;gap:14px}
+.fcell{flex:1}
+.fnum{font-size:1.3rem;font-weight:900;color:#C9A227}
+.flab{font-size:.62rem;letter-spacing:.14em;color:rgba(245,240,228,.7)}
+.fnote{font-size:.7rem;margin-top:10px;line-height:1.6;color:rgba(245,240,228,.85)}
+/* section 头 */
+.shead{margin:34px 0 14px;display:flex;align-items:baseline;gap:10px;border-bottom:2px solid #26221A;padding-bottom:8px}
+.shead h2{font-size:1.28rem;font-weight:900;letter-spacing:.02em}
+.shead .en{font-size:.62rem;letter-spacing:.2em;color:#8E1F1F;font-weight:700}
+.shead .cnt{margin-left:auto;font-size:.72rem;color:#6B6353}
+/* 电影档案卡 */
+.mcard{background:#fff;border:2px solid #26221A;padding:16px 16px 14px;margin-bottom:12px;box-shadow:4px 4px 0 rgba(38,34,26,.16)}
+.mtop{display:flex;align-items:baseline;gap:10px}
+.myr{font-size:.7rem;font-weight:900;color:#F5F0E4;background:#8E1F1F;padding:2px 8px;border-radius:3px;letter-spacing:.08em}
+.mzh{font-weight:900;font-size:1.1rem}
+.men{font-size:.6rem;letter-spacing:.16em;color:#8A8070}
+.mdesc{font-size:.85rem;margin-top:8px;color:#3A362C}
+/* 点亮墙 */
+.wall{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin:12px 0 4px}
+.w{aspect-ratio:1;border:1.5px solid #B8AE97;background:#EFE8D5;cursor:pointer;position:relative}
+.w.on{background:#8E1F1F;border-color:#8E1F1F}
+.w.on::after{content:"✓";color:#F5F0E4;font-size:.72rem;position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.progbar{height:8px;background:#E2DAC5;border:1.5px solid #B8AE97;margin:8px 0 0}
+.progbar i{display:block;height:100%;background:#8E1F1F;transition:width .4s}
+/* 场面卡 */
+.scgrid{margin-top:14px}
+.scp{border-bottom:2px solid #26221A;padding:18px 0 14px}
+.scp .phead{font-size:.66rem;font-weight:900;letter-spacing:.22em;margin-bottom:2px}
+.scp.g0 .phead{color:#8E1F1F}.scp.g1 .phead{color:#1F5C3D}
+.sc{background:#fff;border:1.5px solid #26221A;margin-bottom:10px;box-shadow:3px 3px 0 rgba(38,34,26,.12);overflow:hidden;transition:transform .15s}
+.sc:active{transform:scale(.985)}
+.sch{display:flex;align-items:baseline;gap:9px;padding:12px 14px 10px;cursor:pointer}
+.sno{font-size:.62rem;font-weight:900;color:#F5F0E4;background:#26221A;padding:1px 6px;border-radius:2px;letter-spacing:.06em;flex-shrink:0}
+.szh{font-weight:900;font-size:.98rem}
+.sen{font-size:.56rem;letter-spacing:.1em;color:#8A8070;display:block;margin-top:1px}
+.sdetail{max-height:0;overflow:hidden;transition:max-height .4s}
+.sc.open .sdetail{max-height:420px}
+.sbody{padding:0 14px 13px;font-size:.85rem;color:#3A362C}
+.sact{margin:2px 0 13px}
+.sbtn{font-family:inherit;font-size:.78rem;font-weight:900;cursor:pointer;padding:7px 16px;border:2px solid #8E1F1F;background:#8E1F1F;color:#F5F0E4;box-shadow:2px 2px 0 rgba(38,34,26,.3)}
+.sbtn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 rgba(38,34,26,.3)}
+.sc.on .sbtn{background:transparent;color:#8E1F1F}
+.sc.on .sch .sno{background:#C9A227;color:#26221A}
+/* 防御工事 */
+.traptable{background:#fff;border:2px solid #26221A;box-shadow:4px 4px 0 rgba(38,34,26,.16)}
+.trow{display:flex;align-items:center;gap:10px;padding:10px 13px;border-bottom:1px solid #E4DCC8}
+.trow:last-child{border-bottom:none}
+.tno{font-size:.68rem;font-weight:900;color:#C9A227;width:26px;flex-shrink:0}
+.tzh{font-weight:900;font-size:.88rem;flex:1}
+.twhere{font-size:.68rem;color:#6B6353;flex-shrink:0}
+.thit{font-size:.68rem;font-weight:700;flex-shrink:0;padding:2px 8px;border-radius:99px;border:1px solid}
+.trow.g0 .thit{color:#8E1F1F;border-color:#D8B3B3}
+.trow.g1 .thit{color:#1F5C3D;border-color:#B3CDBE}
+.trapnote{font-size:.72rem;color:#6B6353;margin-top:8px;line-height:1.6}
+/* 台词 */
+.q{background:#fff;border:1.5px solid #26221A;padding:14px 16px;margin-bottom:10px;box-shadow:3px 3px 0 rgba(38,34,26,.1)}
+.qen{font-size:.66rem;letter-spacing:.05em;color:#8E1F1F;font-style:italic;margin-bottom:4px;font-weight:700}
+.qzh{font-weight:900;font-size:1.02rem;line-height:1.5}
+.qwho{font-size:.68rem;color:#8A8070;margin-top:6px;text-align:right}
+/* 冷知识 */
+.fact{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #D8CFB8}
+.fact:last-child{border-bottom:none}
+.fno{font-size:.7rem;font-weight:900;color:#F5F0E4;background:#1F5C3D;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:3px;flex-shrink:0}
+.fzh{font-weight:900;font-size:.9rem}
+.fdesc{font-size:.8rem;color:#4A4436;margin-top:2px}
+/* 年表 */
+.seqrow{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed #C5BBA2}
+.seqrow:last-child{border:none}
+.seqyr{font-weight:900;color:#8E1F1F;font-size:.95rem;width:44px;flex-shrink:0}
+.seqzh{font-weight:900;font-size:.88rem}
+.seqdesc{font-size:.76rem;color:#6B6353}
+/* 终章 */
+#final{display:none;margin-top:36px;background:#1F5C3D;border:2px solid #26221A;padding:26px 20px;text-align:center;box-shadow:5px 5px 0 rgba(38,34,26,.2);position:relative}
+#final.show{display:block;animation:pop .5s}
+@keyframes pop{0%{transform:scale(.9);opacity:0}100%{transform:scale(1);opacity:1}}
+.finlab{font-size:.66rem;letter-spacing:.3em;color:#C9A227;font-weight:900}
+.finbig{font-size:1.5rem;font-weight:900;color:#F5F0E4;margin:10px 0 6px;line-height:1.35}
+.finsub{font-size:.8rem;color:rgba(245,240,228,.85);line-height:1.7}
+/* 诚实 */
+.honest{margin-top:30px;font-size:.68rem;color:#8A8070;line-height:1.8;border-top:1px solid #D8CFB8;padding-top:14px}
+.honest b{color:#4A4436}
+footer{margin-top:26px;text-align:center;font-size:.66rem;color:#8A8070;letter-spacing:.14em}
+#toast{position:fixed;left:50%;bottom:12%;transform:translateX(-50%) translateY(20px);background:#26221A;color:#F5F0E4;
+ padding:9px 18px;font-size:.8rem;border-radius:99px;opacity:0;pointer-events:none;transition:.3s;z-index:9;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:390px){.h1{font-size:2.2rem}}
+</style>
+</head>
+<body>
+<header>
+ <div class="hsnow" style="top:12%;left:8%">❄</div><div class="hsnow" style="top:24%;right:12%">❅</div>
+ <div class="hsnow" style="bottom:18%;left:16%">❆</div><div class="hsnow" style="bottom:28%;right:22%">❄</div>
+ <div style="max-width:430px;margin:0 auto;position:relative">
+  <div class="h1">HOME ALONE<span class="dot">.</span></div>
+  <div class="h2">小鬼当家</div>
+  <div class="h3">1990 · 圣诞防御工事档案 · 20TH CENTURY FOX</div>
+ </div>
+</header>
+<div class="filmband">
+ <div style="max-width:430px;margin:0 auto">
+  <div class="frow">
+   <div class="fcell"><div class="fnum">$18M</div><div class="flab">成本</div></div>
+   <div class="fcell"><div class="fnum">$476M</div><div class="flab">全球票房</div></div>
+   <div class="fcell"><div class="fnum">2×</div><div class="flab">奥斯卡提名</div></div>
+   <div class="fcell"><div class="fnum">103'</div><div class="flab">片长</div></div>
+  </div>
+  <div class="fnote">克里斯·哥伦布执导 · 约翰·休斯编剧 · 约翰·威廉姆斯配乐 —— 麦考利·卡尔金凭凯文一角提名金球奖男主角，八岁封神。</div>
+ </div>
+</div>
+<div class="wrap">
+ <div class="shead"><h2>正典两部</h2><span class="en">THE CANON</span><span class="cnt">1990–1992</span></div>
+ <div id="mlist"></div>
+
+ <div class="shead"><h2>十六大名场面</h2><span class="en">16 SCENES</span><span class="cnt" id="prog">0 / 16</span></div>
+ <div class="wall" id="wall"></div>
+ <div class="progbar"><i id="pbar" style="width:0%"></i></div>
+ <div class="scgrid" id="sclist"></div>
+
+ <div class="shead"><h2>凯文的防御工事</h2><span class="en">BOOBY TRAPS</span><span class="cnt">12 项工程</span></div>
+ <div class="traptable" id="traps"></div>
+ <div class="trapnote">两部电影共 12 项经典防御工事——从熨斗烙胸到马桶炸毁，凯文的工程学天赋与两位笨贼的疼痛承受力同步登峰。Harry 掌心两度烧红，Marv 天灵盖吃满四块砖。</div>
+
+ <div class="shead"><h2>台词墙</h2><span class="en">QUOTES</span></div>
+ <div id="quotes"></div>
+
+ <div class="shead"><h2>冷知识档案馆</h2><span class="en">FACTS</span></div>
+ <div id="facts"></div>
+
+ <div class="shead"><h2>外传年表</h2><span class="en">THE SEQUELS</span><span class="cnt">1997–2021</span></div>
+ <div id="seqs"></div>
+
+ <div id="final">
+  <div class="finlab">ALL 16 SCENES · 完</div>
+  <div class="finbig">MERRY CHRISTMAS,<br>YA FILTHY ANIMAL.</div>
+  <div class="finsub">AND A HAPPY NEW YEAR.<br>你已经看完全部十六个名场面——凯文的尖叫、教堂的雪、纽约的鸽子和两栋被炸穿的房子。<br>圣诞快乐，你这个肮脏的畜生。</div>
+ </div>
+
+ <div class="honest"><b>数据诚实标注</b>：正典两部名场面与防御工事为影迷向整理（1990/1992 两部正片内容）；票房 $476,684,675 与奥斯卡双提名（最佳配乐/最佳歌曲）为 boxofficemojo 与第 63 届奥斯卡官方口径；《Angels with Filthy Souls》为剧组特摄短片、特朗普广场酒店客串、Fridge 替代粗口等冷知识多源可查；外传四部（1997/2002/2012/2021）仅作年表收录，非正典。本站为影迷非官方致敬页。</div>
+ <footer>HOME ALONE · 1990–1992 · A JOHN HUGHES CHRISTMAS</footer>
+</div>
+<div id="toast"></div>
+<script>
+var D={"SC": [{"no": 1, "part": 0, "zh": "须后水的尖叫", "en": "THE AFTERSHAVE SCREAM", "desc": "凯文早上刮完胡子，双手捂脸走到镜子前——那声穿越三十五年的童声尖叫，海报的灵感直接来自蒙克的名画《呐喊》。八岁男孩独自面对成人世界的第一秒。"}, {"no": 2, "part": 0, "zh": "「我让全家消失了」", "en": "I MADE MY FAMILY DISAPPEAR", "desc": "被骂上阁楼的凯文对妈妈喊「我再也不想见到你们」，一觉醒来全家真的消失。他对着空荡荡的门厅大喊妈妈——然后意识到：这是他一个人的家了。许愿要小心。"}, {"no": 3, "part": 0, "zh": "跳床·零食·无人管的自由", "en": "KEVIN'S DAY OFF", "desc": "一个人在家的第一天：跳床、翻大人零食柜、看不让看的片子、用爸爸的信用卡点一整只奶酪披萨（小凯文人生第一笔独立消费，也是全片最贵的陷阱伏笔）。"}, {"no": 4, "part": 0, "zh": "教堂里的马利老人", "en": "THE CHURCH SCENE", "desc": "全片最温柔的一幕。平安夜教堂，凯文和传说中「铲死人的马利」老人并排听唱诗——老人说出自己的遗憾，凯文听懂了大人的孤单。约翰·休斯写给孩子的一封信，藏在喜剧正中央。"}, {"no": 5, "part": 0, "zh": "《Keep the change, ya filthy animal》", "en": "ANGELS WITH FILTHY SOULS", "desc": "凯文用黑白黑帮片《Angels with Filthy Souls》（剧组真拍的假电影）+纸板人偶+鞭炮声骗过送披萨的。这句「零钱不用找了，你这家肮脏的畜生」从此成为流行文化梗，比很多真电影还有名。"}, {"no": 6, "part": 0, "zh": "立体声诡计·派对假象", "en": "THE MANNEQUIN PARTY", "desc": "为吓退踩点的湿盗，凯文用人体模型+玩具火车轨道+剪报人头，在窗后导演了一场灯火通明的圣诞派对。八岁的空间调度天才，斯皮尔伯格看了都要起立。"}, {"no": 7, "part": 0, "zh": "陷阱屋大作战", "en": "THE BOOBY-TRAPPED HOUSE", "desc": "影史最著名的家庭保卫战：熨斗烙胸口、油漆桶砸天灵盖、烧红的门把手、光脚踩圣诞彩珠、 tarantula 蜘蛛上脸。凯文把整栋房子改造成游乐场级堡垒——喜剧影史最疼的四十分钟。"}, {"no": 8, "part": 0, "zh": "雪夜重逢", "en": "MOM COMES HOME", "desc": "妈妈卖掉所有家当、和波林斯基乐队连夜赶路，终于雪夜狂奔回家。凯文从楼上飞奔下来抱住她——然后问的第一句是家里的东西有没有被偷。妈妈：什么？门厅的马利老人在窗外微笑，和儿子和解了。圣诞快乐。"}, {"no": 9, "part": 1, "zh": "上错飞机·纽约我来了", "en": "WRONG PLANE, HELLO NYC", "desc": "全家这次没把凯文忘在家——他在机场跟丢了，跟着一个穿同款大衣的男人上了飞往纽约的航班。落地后凯文不慌不忙：妈妈说过，纽约是个非常适合迷路的大城市。"}, {"no": 10, "part": 1, "zh": "广场酒店入住", "en": "CHECKING INTO THE PLAZA", "desc": "用爸爸的信用卡住进广场大酒店，凯文租下套房、点满客房服务、看邓肯玩具店的宣传片——对酒店前台与全体员工进行了一场八岁富豪的演技大赏。特朗普当时是酒店老板，也客串了一镜。"}, {"no": 11, "part": 1, "zh": "邓肯玩具店与斑鸠", "en": "DUNCAN'S TOY CHEST", "desc": "老玩具店老板邓肯送凯文一对斑鸠装饰：「一只送给你珍视的人，一只自己留着——这就是友谊。」全片的题眼，也是最后所有和解的信物。"}, {"no": 12, "part": 1, "zh": "鸽子女士与中央公园", "en": "THE PIGEON LADY", "desc": "第二部的「马利老人」：一个满身鸽子、躲在公园里不敢见人的孤独女人。又是教堂，又是坦诚的对话，约翰·休斯把同一套温柔配方原样奉上——因为第一部确实有效。"}, {"no": 13, "part": 1, "zh": "录音带反击战", "en": "THE TAPE RECORDER ESCAPE", "desc": "酒店经理带着拆穿假信用卡的怒火上门，凯文早已备好录音带+木偶+蒸汽熨斗的连环诡计，从消防梯全身而退——顺便把天花板砸出一个工具箱形状的洞。"}, {"no": 14, "part": 1, "zh": "叔叔家·陷阱大作战 2.0", "en": "THE BOOBY-TRAP SEQUEL", "desc": "湿盗 Harry 与 Marv 越狱改名「粘盗」，在凯文叔叔正在装修的联排别墅里迎来人生最惨一夜：砖头四连击、电烙铁抓手、天花板塌方、马桶炸毁、火把烧头顶、扳手砸脸、胸口的「M」字烙印。疼痛升级，笑果翻倍。"}, {"no": 15, "part": 1, "zh": "鸽子救兵", "en": "THE PIGEON ARMY", "desc": "凯文在中央公园被粘盗逼入绝境，鸽子女士带着整个鸽群从天而降——用一桶鸟食把两个笨贼淹成雪人。恩怨两清，友谊闭环。"}, {"no": 16, "part": 1, "zh": "Merry Christmas, ya filthy animal", "en": "AND A HAPPY NEW YEAR", "desc": "《Angels with Even Filthier Souls》续集上线，凯文用同一招录像带向追到门口的酒店经理「开枪」，然后跑向妈妈怀里。第二部的圣诞团圆，落在了一句比第一年更嚣张的台词上。"}], "TRAPS": [{"no": 1, "part": 0, "zh": "熨斗烙胸", "where": "地下室门", "hit": "Harry"}, {"no": 2, "part": 0, "zh": "油漆桶砸头", "where": "楼梯滑轨", "hit": "双贼连环"}, {"no": 3, "part": 0, "zh": "烧红门把手", "where": "前门+后门", "hit": "Harry 掌心"}, {"no": 4, "part": 0, "zh": "圣诞彩珠铺地", "where": "侧窗地板", "hit": "Marv 光脚"}, {"no": 5, "part": 0, "zh": "玩具车滑倒", "where": "楼梯口", "hit": "Marv 腰"}, {"no": 6, "part": 0, "zh": "焦油+羽毛", "where": "地下室台阶", "hit": "Marv 全身"}, {"no": 7, "part": 0, "zh": "吹风机烧头皮", "where": "陷阱之门", "hit": "Harry 头顶"}, {"no": 8, "part": 0, "zh": "狼蛛上脸", "where": "Marv 口袋", "hit": "Marv 尖叫"}, {"no": 9, "part": 1, "zh": "砖头四连击", "where": "联排别墅对面楼", "hit": "Marv 天灵盖×4"}, {"no": 10, "part": 1, "zh": "电烙铁抓手", "where": "水槽假开关", "hit": "Marv 手掌"}, {"no": 11, "part": 1, "zh": "天花板塌方", "where": "楼梯井", "hit": "双贼埋砖"}, {"no": 12, "part": 1, "zh": "马桶炸毁", "where": "二楼卫生间", "hit": "Harry 后脑"}], "QUOTES": [{"zh": "圣诞快乐，你这个肮脏的畜生。", "en": "Merry Christmas, ya filthy animal. And a Happy New Year.", "who": "《Angels with Filthier Souls》"}, {"zh": "零钱不用找了。", "en": "Keep the change, ya filthy animal.", "who": "凯文·遥控黑白片"}, {"zh": "这是我的家，我必须保卫它。", "en": "This is my house. I have to defend it.", "who": "凯文·麦考利斯特"}, {"zh": "我让全家消失了。", "en": "I made my family disappear.", "who": "凯文·麦考利斯特"}, {"zh": "妈妈说，纽约是个非常适合迷路的大城市。", "en": "（凯文在肯尼迪机场的自言自语）", "who": "凯文·麦考利斯特"}, {"zh": "女士，我给你三秒钟……一、二……圣诞快乐！", "en": "（最终枪战前的经典倒数）", "who": "黑白片·枪手约翰尼"}], "FACTS": [{"zh": "1800 万成本，4.76 亿票房", "desc": "全球票房 $476,684,675（boxofficemojo 口径），1990 年北美年度冠军，一度被吉尼斯认证为影史最卖座喜剧——投入产出比约 1:26。"}, {"zh": "约翰·威廉姆斯的圣诞配乐", "desc": "《星球大战》《哈利·波特》的配乐大师为本片谱写圣诞乐章，与 Leslie Bricusse 合写的主题曲 Somewhere in My Memory 拿下第 63 届奥斯卡最佳配乐+最佳歌曲双提名。"}, {"zh": "《Angels with Filthy Souls》不是真电影", "desc": "黑白黑帮片是剧组专门拍摄的 30 秒短片，长度与台词都为凯文的诡计量身定制——它比很多真实老电影更家喻户晓。"}, {"zh": "尖叫海报的来源", "desc": "凯文双手捂脸的海报造型，致敬爱德华·蒙克的传世名画《呐喊》——发行方本来想要一张「开门」的照片，最终定格成了影史名场面。"}, {"zh": "Fridge 替代粗口", "desc": "Joe Pesci（Harry）入戏太深总说 F 开头粗口，导演克里斯·哥伦布让他把脏词全换成 Fridge（冰箱）——于是有了 Harry 独特的骂人风格。"}, {"zh": "拍摄主屋是真的", "desc": "凯文家位于芝加哥近郊 Winnetka 的 Lincoln 大道 671 号，真实存在、可以朝圣；2021 年曾开放过短住活动。第二部的广场酒店戏也多为实景。"}, {"zh": "Harry Lime 的名字梗", "desc": "Joe Pesci 的角色叫 Harry Lime——致敬奥逊·威尔斯在《第三个人》（1949）里的同名经典角色。"}, {"zh": "两部连拍年表", "desc": "1990 年 11 月原作上映，1992 年 11 月续集上映——同样的导演、编剧、主角与笨贼，只隔了两年。其后 1997/2002/2012/2021 的续作均为换血外传。"}], "SEQ": [{"yr": "1997", "zh": "小鬼当家 3", "desc": "全新主角 Alex 与间谍芯片——无凯文、无笨贼，系列口碑分水岭。"}, {"yr": "2002", "zh": "小鬼当家 4", "desc": "电视电影，凯文名字回归但全员换角，老粉公认的黑历史。"}, {"yr": "2012", "zh": "小鬼当家 5：假日劫案", "desc": "ABC 电视电影，与正典已无关联。"}, {"yr": "2021", "zh": "甜蜜之家", "desc": "Disney+ 重启版，麦考利·卡尔金仅客串一嗓——真正的凯文再没回来。"}]},PARTS=[{"zh": "小鬼当家", "en": "HOME ALONE", "yr": "1990", "desc": "被忘在家里的 8 岁男孩，与两个笨贼的圣诞保卫战", "color": "#8E1F1F"}, {"zh": "小鬼当家 2：迷失纽约", "en": "LOST IN NEW YORK", "yr": "1992", "desc": "同样的妈妈，同样的机场，这次迷路迷到了纽约", "color": "#1F5C3D"}];
+var lit=[];try{lit=JSON.parse(localStorage.getItem('ha_lit')||'[]')}catch(e){}
+function save(){localStorage.setItem('ha_lit',JSON.stringify(lit))}
+function isOn(n){return lit.indexOf(n)>=0}
+/* 电影档案 */
+(function(){
+ var l=document.getElementById('mlist');
+ PARTS.forEach(function(p,i){
+  var m=document.createElement('div');m.className='mcard';
+  m.innerHTML='<div class="mtop"><span class="myr">'+p.yr+'</span><span class="mzh">'+p.zh+'</span><span class="men">'+p.en+'</span></div>'+
+   '<div class="mdesc">'+p.desc+'</div>';
+  l.appendChild(m);
+ });
+})();
+/* 墙 */
+function renderWall(){
+ var w=document.getElementById('wall');w.innerHTML='';
+ D.SC.forEach(function(s){
+  var d=document.createElement('div');d.className='w'+(isOn(s.no)?' on':'');
+  d.onclick=function(){
+   var c=document.getElementById('sc'+s.no);
+   if(c)c.scrollIntoView({behavior:'smooth',block:'center'});
+  };
+  w.appendChild(d);
+ });
+ var n=lit.length;
+ document.getElementById('prog').textContent=n+' / 16';
+ document.getElementById('pbar').style.width=(n/16*100)+'%';
+}
+/* 场面 */
+function renderList(){
+ var l=document.getElementById('sclist');l.innerHTML='';
+ [0,1].forEach(function(pi){
+  var pd=document.createElement('div');pd.className='scp g'+pi;
+  pd.innerHTML='<div class="phead">'+(pi===0?'第一夜 · 芝加哥郊外':'第二夜 · 纽约')+'</div>';
+  D.SC.forEach(function(s){
+   if(s.part!==pi)return;
+   var c=document.createElement('div');c.className='sc'+(isOn(s.no)?' on':'');c.id='sc'+s.no;
+   c.innerHTML='<div class="sch"><span class="sno">'+(s.no<10?'0':'')+s.no+'</span>'+
+    '<div><span class="szh">'+s.zh+'</span><span class="sen">'+s.en+'</span></div></div>'+
+    '<div class="sdetail"><div class="sbody">'+s.desc+'</div><div class="sact"><button class="sbtn">看过 ✓</button></div></div>';
+   c.querySelector('.sch').onclick=function(){c.classList.toggle('open')};
+   c.querySelector('button').onclick=function(ev){ev.stopPropagation();mark(s.no)};
+   pd.appendChild(c);
+  });
+  l.appendChild(pd);
+ });
+}
+function mark(n){
+ var c=document.getElementById('sc'+n);
+ if(!isOn(n)){
+  lit.push(n);save();
+  if(c)c.classList.add('on');
+  c.querySelector('.sch').click();c.querySelector('.sch').click();
+  toast('第 '+n+' 幕 · '+D.SC[n-1].zh+' — 看过');
+  if(lit.length===16){
+   setTimeout(function(){document.getElementById('final').classList.add('show')},400);
+   setTimeout(function(){window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})},800);
+  }
+ }else{
+  lit.splice(lit.indexOf(n),1);save();
+  if(c)c.classList.remove('on');
+  document.getElementById('final').classList.remove('show');
+  toast('已熄灭');
+ }
+ renderWall();
+}
+/* 陷阱 */
+(function(){
+ var l=document.getElementById('traps');
+ D.TRAPS.forEach(function(t){
+  var r=document.createElement('div');r.className='trow g'+t.part;
+  r.innerHTML='<span class="tno">'+(t.no<10?'0':'')+t.no+'</span><span class="tzh">'+t.zh+'</span>'+
+   '<span class="twhere">'+t.where+'</span><span class="thit">'+t.hit+'</span>';
+  l.appendChild(r);
+ });
+})();
+/* 台词 */
+(function(){
+ var l=document.getElementById('quotes');
+ D.QUOTES.forEach(function(q){
+  var d=document.createElement('div');d.className='q';
+  d.innerHTML='<div class="qen">'+q.en+'</div><div class="qzh">「'+q.zh+'」</div><div class="qwho">— '+q.who+'</div>';
+  l.appendChild(d);
+ });
+})();
+/* 冷知识 */
+(function(){
+ var l=document.getElementById('facts');
+ D.FACTS.forEach(function(f,i){
+  var d=document.createElement('div');d.className='fact';
+  d.innerHTML='<span class="fno">'+(i+1)+'</span><div><div class="fzh">'+f.zh+'</div><div class="fdesc">'+f.desc+'</div></div>';
+  l.appendChild(d);
+ });
+})();
+/* 年表 */
+(function(){
+ var l=document.getElementById('seqs');
+ D.SEQ.forEach(function(s){
+  var d=document.createElement('div');d.className='seqrow';
+  d.innerHTML='<span class="seqyr">'+s.yr+'</span><div><div class="seqzh">'+s.zh+'</div><div class="seqdesc">'+s.desc+'</div></div>';
+  l.appendChild(d);
+ });
+})();
+var tt;
+function toast(s){var t=document.getElementById('toast');t.textContent=s;t.classList.add('show');
+ clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show')},1900)}
+renderWall();renderList();
+if(lit.length===16){document.getElementById('final').classList.add('show')}
+</script>
+</body>
+</html>
